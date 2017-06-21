@@ -56,4 +56,4 @@ metrics = model.evaluate(x=x_test, y=y_test_one_hot, verbose=0)
 for metrics_index, metrics_name in enumerate(model.metrics_names):
     name = metrics_name
     value = metrics[metrics_index]
-    print("{}: {}%".format(name, value * 100))
+    print("{}: {}".format(name, value))
