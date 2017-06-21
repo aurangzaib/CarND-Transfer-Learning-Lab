@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # echo "Running Inception Cifar10"
 # python run_bottleneck.py --network inception --batch_size 32 --dataset cifar10
 # echo "Running Inception Traffic"

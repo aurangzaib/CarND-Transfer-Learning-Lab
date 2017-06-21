@@ -2,3 +2,8 @@ data
 models
 .ipynb_checkpoints
 bottlenecks
+.idea
+vgg-100
+resnet-100
+small_traffic_set
+inception-100
