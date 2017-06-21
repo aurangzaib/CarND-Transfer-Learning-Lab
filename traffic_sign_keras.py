@@ -44,12 +44,14 @@ binarizer = LabelBinarizer()
 y_train_one_hot = binarizer.fit_transform(y_train)
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(x=x_train, y=y_train_one_hot, batch_size=128, epochs=3, validation_split=0.3, shuffle=True, verbose=0)
+# training
+model.fit(x=x_train, y=y_train_one_hot, batch_size=128,
+          epochs=3, validation_split=0.3, shuffle=True, verbose=0)
 
 x_test, y_test = pre_process(x_test, y_test)
 binarizer = LabelBinarizer()
 y_test_one_hot = binarizer.fit_transform(y_test)
-
+# testing
 metrics = model.evaluate(x=x_test, y=y_test_one_hot, verbose=0)
 for metrics_index, metrics_name in enumerate(model.metrics_names):
     name = metrics_name
