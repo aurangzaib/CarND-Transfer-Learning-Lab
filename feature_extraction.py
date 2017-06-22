@@ -13,8 +13,8 @@ FLAGS = flags.FLAGS
 # command line flags
 flags.DEFINE_string('training_file', '', "Bottleneck features training file (.p)")
 flags.DEFINE_string('validation_file', '', "Bottleneck features validation file (.p)")
-flags.DEFINE_string('epochs', int, "Number of times to run the train cycles")
-flags.DEFINE_string('batch_size', int, "Size of train set to run network at a time")
+flags.DEFINE_string('epochs', 1, "Number of times to run the train cycles")
+flags.DEFINE_string('batch_size', 128, "Size of train set to run network at a time")
 
 
 def main(_):
@@ -26,19 +26,17 @@ def main(_):
     print("val shape: ", X_val.shape, y_val.shape)
 
     nb_classes = len(np.unique(y_train))
-
-    # define model
     input_shape = X_train.shape[1:]  # all except first
+
     model = Sequential()
     model.add(Flatten(input_shape=input_shape))
-    model.add(Dense(nb_classes, activation='softmax', input_shape=input_shape))
+    model.add(Dense(nb_classes, activation='softmax'))
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.fit(X_train, y_train,
               epochs=int(FLAGS.epochs),
               batch_size=int(FLAGS.batch_size),
               validation_data=(X_val, y_val),
               shuffle=True)
-
 
 # parses flags and calls the `main` function above
 if __name__ == '__main__':
