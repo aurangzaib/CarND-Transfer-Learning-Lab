@@ -1,8 +1,9 @@
 def load_data(filename):
     import pickle
     import os
-    root = os.getcwd() + '/small_traffic_set/'
-    with open(root + filename, mode='rb') as f:
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+    with open(filename, mode='rb') as f:
         data = pickle.load(f)
     assert (len(data['features']) == len(data['labels']))
     return data['features'], data['labels']

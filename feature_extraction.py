@@ -1,14 +1,11 @@
+from helper import load_data
 import tensorflow as tf
 import numpy as np
-import pickle
-import os
 
 tf.python.control_flow_ops = tf
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 from keras.layers.core import Flatten, Dense
-from keras.layers import Input
-from keras.models import Model
+from keras.models import Sequential
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -20,47 +17,22 @@ flags.DEFINE_string('epochs', int, "Number of times to run the train cycles")
 flags.DEFINE_string('batch_size', int, "Size of train set to run network at a time")
 
 
-def load_bottleneck_data(training_file, validation_file):
-    """
-    Utility function to load bottleneck features.
-
-    Arguments:
-        training_file - String
-        validation_file - String
-    """
-    print("Training file", training_file)
-    print("Validation file", validation_file)
-
-    with open(training_file, 'rb') as f:
-        train_data = pickle.load(f)
-    with open(validation_file, 'rb') as f:
-        validation_data = pickle.load(f)
-
-    x_train = train_data['features']
-    y_train = train_data['labels']
-    x_val = validation_data['features']
-    y_val = validation_data['labels']
-
-    return x_train, y_train, x_val, y_val
-
-
 def main(_):
     # load bottleneck data
-    X_train, y_train, X_val, y_val = load_bottleneck_data(FLAGS.training_file, FLAGS.validation_file)
+    X_train, y_train = load_data(FLAGS.training_file)
+    X_val, y_val = load_data(FLAGS.validation_file)
+
     print("train shape: ", X_train.shape, y_train.shape)
     print("val shape: ", X_val.shape, y_val.shape)
+
     nb_classes = len(np.unique(y_train))
-    print("classes : {}".format(nb_classes))
+
     # define model
     input_shape = X_train.shape[1:]  # all except first
-    inp = Input(shape=input_shape)
-    x = Flatten()(inp)
-    x = Dense(nb_classes, activation='softmax')(x)
-    model = Model(inp, x)
-    model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
-    # train model
+    model = Sequential()
+    model.add(Flatten(input_shape=input_shape))
+    model.add(Dense(nb_classes, activation='softmax', input_shape=input_shape))
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.fit(X_train, y_train,
               epochs=int(FLAGS.epochs),
               batch_size=int(FLAGS.batch_size),
